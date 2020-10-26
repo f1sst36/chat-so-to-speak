@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Events\NewMessageEvent;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +15,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    //$message = ['data' => '12313221'];
+    
+    event(new NewMessageEvent('fsdf'));
     return view('welcome');
 });
