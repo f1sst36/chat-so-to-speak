@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Events\NewMessageEvent;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,8 +17,10 @@ use App\Events\NewMessageEvent;
 */
 
 Route::get('/', function () {
-    //$message = ['data' => '12313221'];
-    
-    event(new NewMessageEvent('fsdf'));
     return view('welcome');
+});
+
+Route::post('/test', function (Request $request) {
+    $data = ['abc' => 23, 4 => '12412gdfgdfg'];
+    App\Events\NewMessageEvent::dispatch($data);
 });
