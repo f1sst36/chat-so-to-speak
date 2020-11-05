@@ -2,6 +2,12 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Throwable;
+
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -33,5 +39,48 @@ class Handler extends ExceptionHandler
     public function register()
     {
         //
+    }
+
+    public function render($request, Throwable $e)
+    {
+        if (method_exists($e, 'render') && $response = $e->render($request)) {
+            return Router::toResponse($request, $response);
+        } elseif ($e instanceof Responsable) {
+            return $e->toResponse($request);
+        }
+
+        $e = $this->prepareException($this->mapException($e));
+
+        foreach ($this->renderCallbacks as $renderCallback) {
+            if (is_a($e, $this->firstClosureParameterType($renderCallback))) {
+                $response = $renderCallback($e, $request);
+
+                if (! is_null($response)) {
+                    return $response;
+                }
+            }
+        }
+
+        if ($e instanceof HttpResponseException) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 400);
+        } elseif ($e instanceof AuthenticationException) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 401);
+        } elseif ($e instanceof ValidationException) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 400);
+        } elseif ($e instanceof NotFoundHttpException) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 404);
+        }
+ //dd($e->getStatusCode());
+        return response()->json([
+            'message' => $e->getMessage(),
+        ], 500);
     }
 }

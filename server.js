@@ -55,3 +55,8 @@
 // php artisan queue:work
 
 // Dont forget turn on Redis server (redis-cli ping => PONG)
+
+
+
+
+//php artisan passport:install
