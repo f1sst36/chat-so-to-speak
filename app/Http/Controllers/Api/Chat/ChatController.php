@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Chat;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Repositories\ChatRepository;
 
 class ChatController extends Controller
 {
@@ -13,11 +14,21 @@ class ChatController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request, ChatRepository $chatRepository)
     {
+        $chats = $chatRepository->getChatsForUser($request->user()->id);
+
+        if(count($chats) > 0){
+            $result = $chats;
+            $statusCode = 200;
+        } else {
+            $result = 'Chats not found';
+            $statusCode = 404;
+        }
+
         return response()->json([
-            'message' => Auth::user(),
-        ], 401);
+            'data' => $result,
+        ], $statusCode);
     }
 
     /**

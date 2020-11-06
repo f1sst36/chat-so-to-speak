@@ -16,6 +16,7 @@ class BearerToken
      */
     public function handle(Request $request, Closure $next)
     {
+        // format => "Bearer token"
         if ($request->headers->get('Authorization')){
             return $next($request);
         } else {

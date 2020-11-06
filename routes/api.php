@@ -15,33 +15,17 @@ use App\Http\Middleware\BearerToken;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+//App\Events\NewMessageEvent::dispatch($data);
 
 Route::group(['namespace' => 'Auth', 'prefix' => 'auth'], function(){
-    Route::post('/registration', 'AuthController@registration')->withoutMiddleware([BearerToken::class, 'auth:api']);
-    Route::post('/login', 'AuthController@Login')->withoutMiddleware([BearerToken::class, 'auth:api'])->name('login');
+    Route::post('/registration', 'AuthController@registration')
+        ->withoutMiddleware([BearerToken::class, 'auth:api']);
+    Route::post('/login', 'AuthController@Login')
+        ->withoutMiddleware([BearerToken::class, 'auth:api'])->name('login');
 
     Route::post('/logout', 'AuthController@Logout');
 });
 
-Route::group(
-    ['namespace' => 'Chat', 'prefix' => 'chat'], 
-    function(){
-        Route::get('/chats', 'ChatController@index');
-    }
-);
-
-
-
-
-
-
-
-Route::post('/test', function (Request $request) {
-    $data = ['abc' => 23, 4 => '12412gdfgdfg'];
-    //App\Events\NewMessageEvent::dispatch($data);
-    //return abort(404);
-    return response()->json($data, 200);
+Route::group(['namespace' => 'Chat', 'prefix' => 'chat'], function(){
+    Route::get('/chats', 'ChatController@index');
 });
