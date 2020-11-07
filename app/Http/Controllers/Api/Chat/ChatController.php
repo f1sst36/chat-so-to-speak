@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Api\Chat;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\Api\Chat\CreateChatRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Repositories\ChatRepository;
+use App\Models\Chat;
 
 class ChatController extends Controller
 {
@@ -32,24 +35,40 @@ class ChatController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateChatRequest $request)
     {
-        //
+        $data = $request->all();
+        $chat = (new Chat)->fill($data);
+
+        if ($chat){
+            $chat->owner_id = $request->user()->id;
+            $chat->save();
+
+            try {
+                DB::table('chat-user')
+                    ->insert(['user_id' => $request->user()->id, 'chat_id' => $chat->id]);
+            } catch(Exception $e) {
+                return response()->json([
+                    'message' => 'Chat cant be saved into DB',
+                ], 400);
+            }
+
+            // socket event
+
+            return response()->json([
+                'data' => $chat,
+                'message' => 'Chat created successfully',
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Failed to create chat',
+            ], 400);
+        }
     }
 
     /**
@@ -59,17 +78,6 @@ class ChatController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
     {
         //
     }

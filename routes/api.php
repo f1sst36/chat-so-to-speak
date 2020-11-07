@@ -27,5 +27,15 @@ Route::group(['namespace' => 'Auth', 'prefix' => 'auth'], function(){
 });
 
 Route::group(['namespace' => 'Chat', 'prefix' => 'chat'], function(){
-    Route::get('/chats', 'ChatController@index');
+    Route::group(['prefix' => 'messages'], function(){
+        Route::get('{chat_id}', 'MessageController@index');
+    });
+
+    Route::get('/', 'ChatController@index');
+    Route::post('/create', 'ChatController@store');
+
+});
+
+Route::group(['namespace' => 'User', 'prefix' => 'user'], function(){
+    Route::get('/info', 'UserController@show');
 });
