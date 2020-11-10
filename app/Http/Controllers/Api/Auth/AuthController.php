@@ -32,13 +32,13 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function Login(LoginFormRequest $request)
+    public function Login(Request $request)
     {
         $credentials = $request->only('name', 'password');
 
         if (!Auth::attempt($credentials)) {
             return response()->json([
-                'message' => 'You cannot sign with those credentials',
+                'message' => 'Неверный логин или пароль',
                 'errors' => 'Unauthorised'
             ], 401);
         }
@@ -52,9 +52,9 @@ class AuthController extends Controller
         $token->token->save();
 
         return response()->json([
-            'token_type' => 'Bearer',
+            //'token_type' => 'Bearer',
             'token' => $token->accessToken,
-            'expires_at' => Carbon::parse($token->token->expires_at)->toDateTimeString()
+            //'expires_at' => Carbon::parse($token->token->expires_at)->toDateTimeString()
         ], 200);
 
     }

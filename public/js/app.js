@@ -60412,7 +60412,7 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/lib/index.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_1__["default"]({
   broadcaster: 'socket.io',
-  host: 'http://localhost:6001' // значение должно быть равным authHost из конфига + порт
+  host: 'http://aeef40913070.ngrok.io:6001' // значение должно быть равным authHost из конфига + порт
 
 });
 
@@ -60433,7 +60433,11 @@ window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
  */
 
 window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'; // window.axios.defaults.headers.common = {
+//     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+//     'X-Requested-With': 'XMLHttpRequest'
+// };
+
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
@@ -60508,8 +60512,8 @@ if (document.getElementById("root")) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! F:\OS2\OpenServer\domains\chat-so-to-speak\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! F:\OS2\OpenServer\domains\chat-so-to-speak\resources\css\app.css */"./resources/css/app.css");
+__webpack_require__(/*! C:\Main\Programming\OpenServer\OpenServer\domains\chat-so-to-speak\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Main\Programming\OpenServer\OpenServer\domains\chat-so-to-speak\resources\css\app.css */"./resources/css/app.css");
 
 
 /***/ }),

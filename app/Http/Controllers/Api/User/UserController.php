@@ -10,6 +10,7 @@ class UserController extends Controller
 {
     public function show(Request $request, UserRepository $userRepository){
         $data = $userRepository->getUserInfoById($request->user()->id);
+        $data->avatar = env('APP_URL', '') . '/' . $data->avatar;
 
         if ($data){
             $result = $data;
@@ -19,8 +20,6 @@ class UserController extends Controller
             $statusCode = 404;
         }
 
-        return response()->json([
-            'data' => $result,
-        ], $statusCode);
+        return response()->json($result, $statusCode);
     }
 }
