@@ -19,7 +19,6 @@ class ChatUser extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->bigInteger('chat_id')->unsigned();
             $table->foreign('chat_id')->references('id')->on('chats')->onDelete('cascade');
-            $table->timestamps();
         });
     }
 

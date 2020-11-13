@@ -25,7 +25,8 @@ class CreateChatRequest extends FormRequest
     {
         return [
             'name' => 'required|min:3|max:120',
-            'type' => 'required|numeric|min:0|max:1',
+            //'type' => 'required|numeric|min:0|max:1',
+            'interlocutor_id' => 'numeric|min:1',
         ];
     }
 }

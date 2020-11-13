@@ -17,11 +17,17 @@ class ChatController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, ChatRepository $chatRepository)
+    public function index(Request $request, $chat_type, ChatRepository $chatRepository)
     {
-        $chats = $chatRepository->getChatsForUser($request->user()->id);
+        $chats = $chatRepository->getChatsForUserByType($request->user()->id, $chat_type);
 
         if(count($chats) > 0){
+            if($chat_type == 0){
+                foreach($chats as $chat){
+                    $chat->name = json_decode($chat->name, true)[$request->user()->name];
+                }
+            }
+            
             $result = $chats;
             $statusCode = 200;
         } else {
@@ -30,7 +36,7 @@ class ChatController extends Controller
         }
 
         return response()->json([
-            'data' => $result,
+            'chats' => $result
         ], $statusCode);
     }
 
@@ -40,18 +46,55 @@ class ChatController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CreateChatRequest $request)
+    public function store(CreateChatRequest $request, ChatRepository $chatRepository)
     {
         $data = $request->all();
         $chat = (new Chat)->fill($data);
+        $chat->type = 1;
 
-        if ($chat){
+        if (isset($data['interlocutor_id'])) {
+            if($data['interlocutor_id'] == $request->user()->id){
+                return response()->json([
+                    'message' => 'Cant create a chat with myself',
+                ], 400);
+            }
+
+            $interlocutorName = $chatRepository->getInterlocutorsNameById($data['interlocutor_id']);
+
+            if(!isset($interlocutorName)){
+                return response()->json([
+                    'message' => 'No have user with this id',
+                ], 400);
+            }
+
+            $currentUserChats = $chatRepository->getChatsForUserByType($request->user()->id, 0);
+            foreach($currentUserChats as $currentUserChat){
+                if(
+                    json_decode($currentUserChat->name, true)[$request->user()->name] == 
+                    $interlocutorName->name
+                ){
+                    return response()->json([
+                        'message' => 'Chat with this user already exists',
+                    ], 400);
+                }
+            }
+
+            $chat->type = 0;
+            $chat->name = json_encode([
+                $interlocutorName->name => $request->user()->name, 
+                $request->user()->name => $interlocutorName->name
+            ]);
+        }
+
+        if ($chat) {
             $chat->owner_id = $request->user()->id;
             $chat->save();
 
             try {
-                DB::table('chat-user')
-                    ->insert(['user_id' => $request->user()->id, 'chat_id' => $chat->id]);
+                if(isset($data['interlocutor_id'])){
+                    $chatRepository->linkUserWithChat($data['interlocutor_id'], $chat->id);
+                }
+                $chatRepository->linkUserWithChat($request->user()->id, $chat->id);
             } catch(Exception $e) {
                 return response()->json([
                     'message' => 'Chat cant be saved into DB',

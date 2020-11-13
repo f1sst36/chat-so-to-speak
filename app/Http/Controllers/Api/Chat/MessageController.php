@@ -13,7 +13,7 @@ class MessageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, $chat_id, MessageRepository $messageRepository)
+    public function index(Request $request, $chat_id, $last_msg_id, MessageRepository $messageRepository)
     {   
         $isUserHaveChat = $messageRepository->isUserHaveChat($chat_id, $request->user()->id);
 
