@@ -18,8 +18,22 @@ class UserRepository extends CoreRepository{
 
     public function getUserInfoById($user_id){
         return $this->startConditions()
-            ->select(['name', 'avatar', 'created_at'])
+            ->select(['id', 'name', 'avatar'])
             ->where('id', '=', $user_id)
+            ->first();
+    }
+
+    public function getUserByName($user_name){
+        return $this->startConditions()
+            ->where('id', '=', $interlocutorId)
+            ->where('name', '=', $user_name)
+            ->first();
+    }
+
+    public function getInterlocutorsNameById($interlocutorId){
+        return $this->startConditions()
+            ->select('name')
+            ->where('id', '=', $interlocutorId)
             ->first();
     }
 

@@ -17,6 +17,7 @@ class CreateChatsTable extends Migration
             $table->id();
             $table->string('name');
             $table->integer('type')->unsigned()->default(0);
+            $table->string('avatar')->default('media/images/public_chat_avatar.png');
             $table->bigInteger('owner_id')->unsigned();
             $table->foreign('owner_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

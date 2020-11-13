@@ -13,13 +13,13 @@ class ChatUser extends Migration
      */
     public function up()
     {
-        Schema::create('chat-user', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger('user_id')->unsigned();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->bigInteger('chat_id')->unsigned();
-            $table->foreign('chat_id')->references('id')->on('chats')->onDelete('cascade');
-        });
+        // Schema::create('chat-user', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->bigInteger('user_id')->unsigned();
+        //     $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        //     $table->bigInteger('chat_id')->unsigned();
+        //     $table->foreign('chat_id')->references('id')->on('chats')->onDelete('cascade');
+        // });
     }
 
     /**

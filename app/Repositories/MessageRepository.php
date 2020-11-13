@@ -31,7 +31,7 @@ class MessageRepository extends CoreRepository{
     }
 
     public function isUserHaveChat($chat_id, $user_id){
-        $isUserHaveChat = DB::table('chat-user')
+        $isUserHaveChat = DB::table('chat_user_links')
             ->where('user_id', '=', $user_id)
             ->where('chat_id', '=', $chat_id)
             ->first();

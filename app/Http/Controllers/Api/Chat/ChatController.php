@@ -8,6 +8,7 @@ use App\Http\Requests\Api\Chat\CreateChatRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Repositories\ChatRepository;
+use App\Repositories\UserRepository;
 use App\Models\Chat;
 
 class ChatController extends Controller
@@ -17,7 +18,12 @@ class ChatController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, $chat_type, ChatRepository $chatRepository)
+    public function index(
+        Request $request, 
+        $chat_type, 
+        ChatRepository $chatRepository, 
+        UserRepository $userRepository
+    )
     {
         $chats = $chatRepository->getChatsForUserByType($request->user()->id, $chat_type);
 
@@ -31,13 +37,11 @@ class ChatController extends Controller
             $result = $chats;
             $statusCode = 200;
         } else {
-            $result = 'Chats not found';
-            $statusCode = 404;
+            $result = [];
+            $statusCode = 200;
         }
 
-        return response()->json([
-            'chats' => $result
-        ], $statusCode);
+        return response()->json($result, $statusCode);
     }
 
     /**
@@ -46,7 +50,11 @@ class ChatController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CreateChatRequest $request, ChatRepository $chatRepository)
+    public function store(
+        CreateChatRequest $request, 
+        ChatRepository $chatRepository, 
+        UserRepository $userRepository
+    )
     {
         $data = $request->all();
         $chat = (new Chat)->fill($data);
@@ -59,7 +67,7 @@ class ChatController extends Controller
                 ], 400);
             }
 
-            $interlocutorName = $chatRepository->getInterlocutorsNameById($data['interlocutor_id']);
+            $interlocutorName = $userRepository->getInterlocutorsNameById($data['interlocutor_id']);
 
             if(!isset($interlocutorName)){
                 return response()->json([
@@ -91,10 +99,10 @@ class ChatController extends Controller
             $chat->save();
 
             try {
+                $chatRepository->linkUserWithChat($request->user()->id, $chat->id);
                 if(isset($data['interlocutor_id'])){
                     $chatRepository->linkUserWithChat($data['interlocutor_id'], $chat->id);
                 }
-                $chatRepository->linkUserWithChat($request->user()->id, $chat->id);
             } catch(Exception $e) {
                 return response()->json([
                     'message' => 'Chat cant be saved into DB',
