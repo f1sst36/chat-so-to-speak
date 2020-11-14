@@ -20,7 +20,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/test', function (Request $request) {
+Route::get('/test', function (Request $request) {
     $data = ['abc' => 23, 4 => '12412gdfgdfg'];
+    
     App\Events\NewMessageEvent::dispatch($data);
+    return response()->json($data, 200);
 });

@@ -12,7 +12,8 @@ class Chat extends Model
 
     protected $fillable = [
         'name',
-        'type'
+        'type',
+        'avatar'
     ];
 
     protected $hidden = [
@@ -21,5 +22,12 @@ class Chat extends Model
 
     public function messages(){
         return $this->hasMany(Message::class, 'chat_id');
+    }
+
+    public function getAvatarAttribute($avatar){
+        if(!isset($avatar)){
+            return env('APP_URL', '') . 'media/images/public_chat_avater.png';
+        }
+        return env('APP_URL', '') . '/storage/' . $avatar;
     }
 }

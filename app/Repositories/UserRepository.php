@@ -30,11 +30,22 @@ class UserRepository extends CoreRepository{
             ->first();
     }
 
-    public function getInterlocutorsNameById($interlocutorId){
+    public function getInterlocutorById($interlocutorId){
         return $this->startConditions()
-            ->select('name')
+            ->select('id', 'name', 'avatar')
             ->where('id', '=', $interlocutorId)
             ->first();
+    }
+
+    public function getAllUsersWithFields($fields){
+        return $this->startConditions()->select($fields)->get();
+    }
+
+    public function searchUserByName($name){
+        return $this->startConditions()
+            ->select(['id', 'name', 'avatar'])
+            ->where('name', 'LIKE', '%' . $name . '%')
+            ->get();
     }
 
 }

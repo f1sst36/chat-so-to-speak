@@ -17,7 +17,32 @@ class ChatRepository extends CoreRepository{
         return Model::class;
     }
 
-    public function getChatsForUserByType($user_id, $type){
+    protected function getOnlyChatsByTypeWithLastMessage($fields, $chat_ids, $type){
+        return $this->startConditions()
+            ->select($fields)
+            ->where('type', '=', $type)
+            ->whereIn('id', $chat_ids)
+            ->with(['messages' => function($query){
+                    $query->select(['id', 'chat_id', 'text', 'updated_at'])
+                        ->orderBy('created_at', 'desc')
+                        ->first();
+                }])->get();
+    }
+
+    protected function searchOnlyChatsByTypeWithLastMessage($fields, $chat_ids, $type, $search_query){
+        return $this->startConditions()
+            ->select($fields)
+            ->where('type', '=', $type)
+            ->where('name', 'LIKE', '%' . $search_query . '%')
+            ->whereIn('id', $chat_ids)
+            ->with(['messages' => function($query){
+                    $query->select(['id', 'chat_id', 'text', 'updated_at'])
+                        ->orderBy('created_at', 'desc')
+                        ->first();
+                }])->get();
+    }
+
+    public function getChatsForUserByType($user_id, $type, $search_query = null){
 
         $fields = ['id', 'name', 'type', 'avatar'];
         if ($type == 0){
@@ -37,31 +62,22 @@ class ChatRepository extends CoreRepository{
             ->with(['user'])
             ->get();
 
-        $chats = $this->startConditions()
-            ->select($fields)
-            ->where('type', '=', $type)
-            ->whereIn('id', $chat_ids)
-            ->with(['messages' => function($query){
-                    $query->select(['id', 'chat_id', 'text', 'updated_at'])
-                        ->orderBy('created_at', 'desc')
-                        ->first();
-                }])->get();
+        $chats = $search_query != null ? 
+            $this->searchOnlyChatsByTypeWithLastMessage($fields, $chat_ids, $type, $search_query) : 
+            $this->getOnlyChatsByTypeWithLastMessage($fields, $chat_ids, $type);
 
         foreach($chats as $chat){
             if ($chat->type == 0){
                 foreach($chatLinksWithUser as $chatLinkWithUser){
                     $chat->setAttribute('user', null);
                     if($chat->id == $chatLinkWithUser->chat_id){
-                        $chatLinkWithUser->user->avatar = env('APP_URL', '') . '/' . $chatLinkWithUser->user->avatar;
                         $chat->user = $chatLinkWithUser->user;
                     }
                 }
             } elseif ($chat->type == 1) {
                 $chat->setAttribute('users', collect());
-                $chat->avatar = env('APP_URL', '') . '/' . $chat->avatar;
                 foreach($chatLinksWithUser as $chatLinkWithUser){
                     if($chat->id == $chatLinkWithUser->chat_id){
-                        $chatLinkWithUser->user->avatar = env('APP_URL', '') . '/' . $chatLinkWithUser->user->avatar;
                         $chat->users->push($chatLinkWithUser->user);
                     }
                 }
@@ -71,8 +87,6 @@ class ChatRepository extends CoreRepository{
 
         return $chats;
     }
-
-    
 
     public function linkUserWithChat($user_id, $chat_id){
         DB::table('chat_user_links')

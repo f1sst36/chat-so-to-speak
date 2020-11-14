@@ -1,5 +1,5 @@
 {
-	"authHost": "http://localhost",
+	"authHost": "http://d601034939bf.ngrok.io",
 	"authEndpoint": "/broadcasting/auth",
 	"clients": [],
 	"database": "redis",

@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('password');
-            $table->string('avatar')->default('media/images/default_avatar.png');
+            $table->text('avatar')->default('');
             //$table->rememberToken();
             $table->timestamps();
         });

@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api\Chat;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateChatRequest extends FormRequest
+class CreateDirectChatRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,6 @@ class CreateChatRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|min:3|max:120',
-            //'type' => 'required|numeric|min:0|max:1',
             'interlocutor_id' => 'numeric|min:1',
         ];
     }

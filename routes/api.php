@@ -32,10 +32,12 @@ Route::group(['namespace' => 'Chat', 'prefix' => 'chat'], function(){
     });
 
     Route::get('/type={chat_type}', 'ChatController@index');
-    Route::post('/create', 'ChatController@store');
+    Route::post('/create/group', 'ChatController@createGroupChat');
 
 });
 
 Route::group(['namespace' => 'User', 'prefix' => 'user'], function(){
+    Route::get('/', 'UserController@index');
     Route::get('/info', 'UserController@show');
+    Route::post('/search', 'UserController@searchUsersAndChats');
 });
