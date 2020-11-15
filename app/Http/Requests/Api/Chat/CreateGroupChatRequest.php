@@ -25,7 +25,7 @@ class CreateGroupChatRequest extends FormRequest
     {
         return [
             'name' => 'required|min:3|max:120',
-            'avatar' => 'max:10000|image',
+            //'avatar' => 'max:10000|image',
         ];
     }
 }

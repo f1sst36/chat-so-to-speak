@@ -60412,7 +60412,7 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/lib/index.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_1__["default"]({
   broadcaster: 'socket.io',
-  host: 'http://d601034939bf.ngrok.io:6001' // значение должно быть равным authHost из конфига + порт
+  host: 'http://b947ab7595bd.ngrok.io:6001' // значение должно быть равным authHost из конфига + порт
 
 });
 
@@ -60480,19 +60480,14 @@ __webpack_require__.r(__webpack_exports__);
 var Main = function Main() {
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     window.Echo.channel("chat").listen("NewMessageEvent", function (data) {
-      console.log(data);
+      console.log("NewMessageEvent", data);
     });
   }, []);
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Laravel"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-    src: "data:image/gif;base64,R0lGODdhMAAwAPAAAAAAAP///ywAAAAAMAAw\r AAAC8IyPqcvt3wCcDkiLc7C0qwyGHhSWpjQu5yqmCYsapyuvUUlvONmOZtfzgFz\r ByTB10QgxOR0TqBQejhRNzOfkVJ+5YiUqrXF5Y5lKh/DeuNcP5yLWGsEbtLiOSp\r a/TPg7JpJHxyendzWTBfX0cxOnKPjgBzi4diinWGdkF8kjdfnycQZXZeYGejmJl\r ZeGl9i2icVqaNVailT6F5iJ90m6mvuTS4OK05M0vDk0Q4XUtwvKOzrcd3iq9uis\r F81M1OIcR7lEewwcLp7tuNNkM3uNna3F2JQFo97Vriy/Xl4/f1cf5VWzXyym7PH\r hhx4dbgYKAAA7",
-    height: "16px",
-    width: "16px",
-    alt: "\u043A\u0430\u043A\u0430\u044F-\u0442\u043E \u043A\u0430\u0440\u0442\u0438\u043D\u043A\u0430"
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Laravel"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     onClick: function onClick() {
       axios__WEBPACK_IMPORTED_MODULE_2___default()({
         method: "get",
-        url: "http://d601034939bf.ngrok.io/test"
+        url: "http://b947ab7595bd.ngrok.io/test"
       }).then(function (data) {
         console.log(data);
       })["catch"](function (error) {

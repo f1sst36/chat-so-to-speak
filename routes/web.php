@@ -23,6 +23,7 @@ Route::get('/', function () {
 Route::get('/test', function (Request $request) {
     $data = ['abc' => 23, 4 => '12412gdfgdfg'];
     
-    App\Events\NewMessageEvent::dispatch($data);
+    //App\Events\NewMessageEvent::dispatch($data);
+    event(new App\Events\NewMessageEvent($data));
     return response()->json($data, 200);
 });

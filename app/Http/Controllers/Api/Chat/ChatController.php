@@ -66,7 +66,7 @@ class ChatController extends Controller
         $chat->name = $data['name'];
         $chat->type = 1;
 
-        if ($request->has('avatar')){
+        if ($request->hasFile('avatar')){
             $image = $request->file('avatar');
             $imgName = Str::slug($request->input('name')) . '_' . time();
             $folder = 'media/images/';
@@ -92,12 +92,14 @@ class ChatController extends Controller
             }
 
             $result = [
-                'id' => $chat->id,
-                'type' => $chat->type,
-                'name' => $chat->name,
-                'users' => [$request->user()],
-                'avatar' => $chat->avatar,
-                'messages' => [],
+                $chat => [
+                    'id' => $chat->id,
+                    'type' => $chat->type,
+                    'name' => $chat->name,
+                    'users' => [$request->user()],
+                    'avatar' => $chat->avatar,
+                    'messages' => [],
+                ],
                 'message' => 'Групповой чат успешно создан'
             ];
 
