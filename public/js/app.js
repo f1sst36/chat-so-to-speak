@@ -60411,10 +60411,10 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/lib/index.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_1__["default"]({
-  broadcaster: 'socket.io',
-  host: 'https://lit-sierra-15802.herokuapp.com' + ':6001' // значение должно быть равным authHost из конфига + порт
+  broadcaster: "socket.io",
+  host: "http://localhost:6001" // значение должно быть равным authHost из конфига + порт
 
-});
+}); // io.connect("http://400b3c4a5c30.ngrok.io:6001");
 
 /***/ }),
 
@@ -60471,23 +60471,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
 
 
- // class Main extends Component {
-//     render() {
-//         return <h1>Uraaaaa</h1>;
-//     }
-// }
+
 
 var Main = function Main() {
+  var node = Object(react__WEBPACK_IMPORTED_MODULE_0__["useRef"])();
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     window.Echo.channel("chat").listen("NewMessageEvent", function (data) {
       console.log("NewMessageEvent", data);
+      node.current.innerHTML = data.message['4'];
     });
   }, []);
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Laravel"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "React"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Heroku"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Laravel"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "React"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Heroku"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+    ref: node
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     onClick: function onClick() {
       axios__WEBPACK_IMPORTED_MODULE_2___default()({
         method: "get",
-        url: 'https://lit-sierra-15802.herokuapp.com' + "/test"
+        url: "http://localhost/test"
       }).then(function (data) {
         console.log(data);
       })["catch"](function (error) {

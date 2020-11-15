@@ -1,5 +1,5 @@
 {
-	"authHost": "https://lit-sierra-15802.herokuapp.com",
+	"authHost": "http://localhost",
 	"authEndpoint": "/broadcasting/auth",
 	"clients": [],
 	"database": "redis",
