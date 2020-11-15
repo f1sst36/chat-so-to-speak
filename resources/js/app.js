@@ -7,5 +7,5 @@ window.io = require('socket.io-client');
 
 window.Echo = new Echo({
     broadcaster: 'socket.io',
-    host: process.env.APP_URL + ':6001' // значение должно быть равным authHost из конфига + порт
+    host: 'https://lit-sierra-15802.herokuapp.com' + ':6001' // значение должно быть равным authHost из конфига + порт
 });

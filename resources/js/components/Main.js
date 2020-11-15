@@ -25,7 +25,7 @@ const Main = () => {
                 onClick={() => {
                     axios({
                         method: "get",
-                        url: process.env.APP_URL + "/test"
+                        url: 'https://lit-sierra-15802.herokuapp.com' + "/test"
                     })
                         .then(data => {
                             console.log(data);
