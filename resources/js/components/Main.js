@@ -19,11 +19,13 @@ const Main = () => {
     return (
         <>
             <h1>Laravel</h1>
+            <h1>React</h1>
+            <h2>Heroku</h2>
             <button
                 onClick={() => {
                     axios({
                         method: "get",
-                        url: "http://b947ab7595bd.ngrok.io/test"
+                        url: process.env.APP_URL + "/test"
                     })
                         .then(data => {
                             console.log(data);

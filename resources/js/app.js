@@ -7,5 +7,5 @@ window.io = require('socket.io-client');
 
 window.Echo = new Echo({
     broadcaster: 'socket.io',
-    host: 'http://b947ab7595bd.ngrok.io:6001' // значение должно быть равным authHost из конфига + порт
+    host: process.env.APP_URL + ':6001' // значение должно быть равным authHost из конфига + порт
 });
