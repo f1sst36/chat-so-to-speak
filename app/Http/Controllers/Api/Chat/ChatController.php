@@ -92,7 +92,7 @@ class ChatController extends Controller
             }
 
             $result = [
-                $chat => [
+                'chat' => [
                     'id' => $chat->id,
                     'type' => $chat->type,
                     'name' => $chat->name,

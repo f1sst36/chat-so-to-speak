@@ -46,10 +46,10 @@ class User extends Authenticatable
 
     public function getAvatarAttribute($avatar){
         if($avatar != ''){
-            $result = env('APP_URL', '') . '/storage/' . $avatar;
+            $result = env('APP_URL') . '/storage/' . $avatar;
             return $result;
         }
-        
+        return '';
     }
 
 }

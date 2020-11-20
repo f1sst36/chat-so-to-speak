@@ -23,9 +23,14 @@ class ChatRepository extends CoreRepository{
             ->where('type', '=', $type)
             ->whereIn('id', $chat_ids)
             ->with(['messages' => function($query){
-                    $query->select(['id', 'chat_id', 'text', 'updated_at'])
+                    $query->select(['id', 'chat_id', 'user_id', 'text', 'updated_at'])
+                        ->with(['user' => function($query){
+                            $query->select(['id', 'name', 'avatar'])
+                                ->get();
+                            }])
                         ->orderBy('created_at', 'desc')
                         ->first();
+                        //->get();
                 }])->get();
     }
 

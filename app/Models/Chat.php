@@ -25,9 +25,9 @@ class Chat extends Model
     }
 
     public function getAvatarAttribute($avatar){
-        if(!isset($avatar)){
-            return env('APP_URL', '') . 'media/images/public_chat_avater.png';
+        if($avatar != ''){
+            return env('APP_URL') . '/storage/' . $avatar;
         }
-        return env('APP_URL', '') . '/storage/' . $avatar;
+        return '';
     }
 }

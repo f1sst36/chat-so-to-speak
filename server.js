@@ -46,8 +46,6 @@
 //     console.log("Listening on Port: 3000");
 // });
 
-
-
 // npm run watch
 
 // laravel-echo-server start
@@ -58,7 +56,13 @@
 
 
 
-
 //php artisan passport:install
 
 //lit-sierra-15802
+
+
+
+
+// "sqlite": {
+// 	"databasePath": "/database/laravel-echo-server.sqlite"
+// }

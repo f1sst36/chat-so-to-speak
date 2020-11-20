@@ -16,13 +16,15 @@ class MessageRepository extends CoreRepository{
         return Model::class;
     }
 
-    public function getMessagesByChatId($chat_id){
+    public function getMessagesByChatId($chat_id, $last_msg_id){
         $fields = ['id', 'text', 'user_id', 'updated_at'];
 
         $result = $this->startConditions()
             ->select($fields)
             ->where('chat_id', '=', $chat_id)
-            ->orderBy('created_at', 'desc')
+            ->where('id', '<', $last_msg_id)
+            //->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
             ->with(['user'])
             ->limit(15)
             ->get();

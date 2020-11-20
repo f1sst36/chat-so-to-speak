@@ -15,6 +15,7 @@ class MessageController extends Controller
      */
     public function index(Request $request, $chat_id, $last_msg_id, MessageRepository $messageRepository)
     {   
+
         $isUserHaveChat = $messageRepository->isUserHaveChat($chat_id, $request->user()->id);
 
         if(!$isUserHaveChat){
@@ -23,18 +24,14 @@ class MessageController extends Controller
             ], 400);
         }
 
-        $messages = $messageRepository->getMessagesByChatId($chat_id);
+        $messages = $messageRepository->getMessagesByChatId($chat_id, $last_msg_id);
+        return response()->json($messages, 200);
 
-        if (count($messages) > 0){
-            return response()->json([
-                'data' => $messages
-            ], 200);
-        } else {
-            return response()->json([
-                'data' => [],
-                'message' => 'No have messages for this chat'
-            ], 404);
-        }
+        // if (count($messages) > 0){
+        //     return response()->json($messages, 200);
+        // } else {
+        //     return response()->json([], 200);
+        // }
     }
 
     /**

@@ -34,11 +34,13 @@ class NewMessageEvent implements ShouldBroadcast
     public function broadcastOn()
     {
         // return new PrivateChannel('chat.'.$this->message);
-        return new Channel('chat');
+        //return new Channel('chat');
+
+        return ['chat'];
     }
 
-    // public function broadcastAs()
-    // {
-    //     return ['NewMessage'];
-    // }
+    public function broadcastAs()
+    {
+        return 'NewMessage';
+    }
 }

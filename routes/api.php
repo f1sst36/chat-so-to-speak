@@ -28,7 +28,7 @@ Route::group(['namespace' => 'Auth', 'prefix' => 'auth'], function(){
 
 Route::group(['namespace' => 'Chat', 'prefix' => 'chat'], function(){
     Route::group(['prefix' => 'messages'], function(){
-        Route::get('/chat-id={chat_id}&msg-id={last_msg_id?}', 'MessageController@index');
+        Route::get('/chat-id={chat_id}&msg-id={last_msg_id}', 'MessageController@index');
     });
 
     Route::get('/type={chat_type}', 'ChatController@index');
