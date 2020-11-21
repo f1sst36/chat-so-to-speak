@@ -54,8 +54,6 @@
 
 // Dont forget turn on Redis server (redis-cli ping => PONG)
 
-
-
 //php artisan passport:install
 
 //lit-sierra-15802
@@ -63,6 +61,28 @@
 
 
 
-// "sqlite": {
-// 	"databasePath": "/database/laravel-echo-server.sqlite"
-// }
+// const Pusher = require("pusher-js");
+
+// var pusher = new Pusher("657da11b3b498151a232", {
+//     cluster: "eu",
+//     authEndpoint: "http://localhost/socket/auth"
+//     //encrypted: true,
+// });
+
+// channel = pusher.subscribe("private-chat");
+// channel.bind("NewMessage", function(data) {
+//     console.log("NewMessage", data);
+//     node.current.innerHTML += data.message.text;
+
+//     channel.trigger("client-new-message", "test data from client");
+// });
+// // channel.bind('pusher:subscription_succeeded', function() {
+// //     channel.trigger('client-new-message', { your: 123 });
+// // });
+// channel.bind("client-new-message", function(data) {
+//     console.log("client-new-message", data);
+//     node.current.innerHTML += data + "<br />";
+// });
+
+// onClick={() => {
+//     channel.trigger("client-new-message", "test data from client");

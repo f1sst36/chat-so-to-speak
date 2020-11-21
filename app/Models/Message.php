@@ -10,8 +10,14 @@ class Message extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'chat_id',
+        'text'
+    ];
+
     protected $hidden = [
-        'user_id'
+        'user_id',
+        'created_at'
     ];
 
     public function user(){

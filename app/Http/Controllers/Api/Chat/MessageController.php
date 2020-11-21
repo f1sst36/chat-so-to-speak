@@ -4,18 +4,16 @@ namespace App\Http\Controllers\Api\Chat;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\Api\Chat\SendMessageRequest;
+use App\Models\Message;
 use App\Repositories\MessageRepository;
+use App\Events\NewMessageEvent;
+use Illuminate\Support\Carbon;
 
 class MessageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index(Request $request, $chat_id, $last_msg_id, MessageRepository $messageRepository)
     {   
-
         $isUserHaveChat = $messageRepository->isUserHaveChat($chat_id, $request->user()->id);
 
         if(!$isUserHaveChat){
@@ -26,77 +24,25 @@ class MessageController extends Controller
 
         $messages = $messageRepository->getMessagesByChatId($chat_id, $last_msg_id);
         return response()->json($messages, 200);
-
-        // if (count($messages) > 0){
-        //     return response()->json($messages, 200);
-        // } else {
-        //     return response()->json([], 200);
-        // }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+    // post - chat_id, text, 
+    public function sendMessage(SendMessageRequest $request){
+        $data = $request->all();
+        $currentDate = Carbon::now();
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $message = (new Message)->fill($data);
+        $message->user_id = $request->user()->id;
+        $message->created_at = $message->updated_at = $currentDate;
+        
+        if($message){
+            $message->save();
+            event(new NewMessageEvent($message));
+        }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return response()->json([
+            'status' => true,
+            'message' => 'Сообщение отправлено',
+        ], 200);
     }
 }

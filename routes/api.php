@@ -17,6 +17,8 @@ use App\Http\Middleware\BearerToken;
 
 //App\Events\NewMessageEvent::dispatch($data);
 
+
+
 Route::group(['namespace' => 'Auth', 'prefix' => 'auth'], function(){
     Route::post('/registration', 'AuthController@registration')
         ->withoutMiddleware([BearerToken::class, 'auth:api']);
@@ -29,6 +31,7 @@ Route::group(['namespace' => 'Auth', 'prefix' => 'auth'], function(){
 Route::group(['namespace' => 'Chat', 'prefix' => 'chat'], function(){
     Route::group(['prefix' => 'messages'], function(){
         Route::get('/chat-id={chat_id}&msg-id={last_msg_id}', 'MessageController@index');
+        Route::post('/send', 'MessageController@sendMessage');
     });
 
     Route::get('/type={chat_type}', 'ChatController@index');

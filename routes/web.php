@@ -20,10 +20,18 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::post('socket/auth', function (Request $request) {
+    $data = $request->all();
+    $string = $data['socket_id'] . ':' . $data['channel_name'];
+    $key = env('PUSHER_APP_KEY') . ':' . hash_hmac('sha256', $string, env('PUSHER_APP_SECRET'));
+
+    return response()->json(['auth' => $key], 200);
+});
+
 Route::get('/test', function (Request $request) {
-    $data = ['abc' => 23, 4 => '12412gdfgdfg'];
+    $data = ['abc' => 23, 'text' => 'Some text 123'];
     
     //App\Events\NewMessageEvent::dispatch($data);
-    event(new App\Events\NewMessageEvent("12312321"));
+    event(new App\Events\NewMessageEvent($data));
     //return response()->json($data, 200);
 });

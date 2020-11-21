@@ -32,15 +32,14 @@ class UserController extends Controller
 
     public function searchUsersAndChats(
         SearchUsersAndChatsRequest $request, 
-        UserRepository $userRepository, 
-        ChatRepository $chatRepository
+        UserRepository $userRepository
     ){
         $searchQuery = $request->input('search_query');
-
         $users = $userRepository->searchUserByName($searchQuery);
-        $type = 1;
-        $chats = $chatRepository->getChatsForUserByType($request->user()->id, $type, $searchQuery);
+        
+        //$type = 1;
+        //$chats = $chatRepository->getChatsForUserByType($request->user()->id, $type, $searchQuery);
 
-        return response()->json(['users' => $users, 'chats' => $chats], 200);
+        return response()->json($users, 200);
     }
 }
