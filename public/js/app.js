@@ -60408,13 +60408,13 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
-
-window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/lib/index.js");
-window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_1__["default"]({
-  broadcaster: "socket.io",
-  host: "http://localhost:6001" // значение должно быть равным authHost из конфига + порт
-
-}); // io.connect("http://400b3c4a5c30.ngrok.io:6001");
+ // import io from "socket.io-client";
+//const io = require("socket.io-client");
+// window.Echo = new Echo({
+//     broadcaster: "socket.io",
+//     host: "http://localhost:6001" // значение должно быть равным authHost из конфига + порт
+// });
+//io.connect("http://localhost:6001");
 
 /***/ }),
 
@@ -60467,25 +60467,41 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/lib/index.js");
+/* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_3__);
 
 
 
+
+var socket;
 
 var Main = function Main() {
   var node = Object(react__WEBPACK_IMPORTED_MODULE_0__["useRef"])();
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    window.Echo.channel("chat").listen("NewMessageEvent", function (data) {
-      console.log("NewMessageEvent", data);
-      node.current.innerHTML = data.message['4'];
+    // window.Echo.channel("chat").listen("NewMessageEvent", data => {
+    //     console.log("NewMessageEvent", data);
+    //     node.current.innerHTML = data.message['4'];
+    // });
+    socket = socket_io_client__WEBPACK_IMPORTED_MODULE_2___default()("http://localhost:6001");
+    console.log(socket.id); // undefined
+
+    socket.on("connect", function () {
+      console.log(socket.id); // 'G5p5...'
     });
+    socket.on("NewMessageEvent", function (data) {
+      console.log(data);
+    }); // socket.onAny((event, ...args) => {
+    //     console.log(`got ${event}`);
+    // });
   }, []);
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Laravel"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "React"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Heroku"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Laravel"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "React"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
     ref: node
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     onClick: function onClick() {
-      axios__WEBPACK_IMPORTED_MODULE_2___default()({
+      socket.emit('NewMessageEvent', 'Hey world');
+      axios__WEBPACK_IMPORTED_MODULE_3___default()({
         method: "get",
         url: "http://localhost/test"
       }).then(function (data) {
@@ -60512,8 +60528,8 @@ if (document.getElementById("root")) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! F:\OS2\OpenServer\domains\chat-so-to-speak\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! F:\OS2\OpenServer\domains\chat-so-to-speak\resources\css\app.css */"./resources/css/app.css");
+__webpack_require__(/*! F:\os2\openserver\domains\chat-so-to-speak\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! F:\os2\openserver\domains\chat-so-to-speak\resources\css\app.css */"./resources/css/app.css");
 
 
 /***/ }),
