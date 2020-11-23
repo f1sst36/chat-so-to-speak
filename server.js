@@ -54,9 +54,9 @@
 
 // Dont forget turn on Redis server (redis-cli ping => PONG)
 
-//php artisan passport:install
+// php artisan passport:install
 
-//lit-sierra-15802
+// php artisan l5-swagger:generate
 
 
 

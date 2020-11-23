@@ -26,7 +26,25 @@ class MessageController extends Controller
         return response()->json($messages, 200);
     }
 
-    // post - chat_id, text, 
+    /**
+     * @OA\Post(
+     *     path="/api/chat/messages/send",
+     *     summary="Trigger method to broadcasting event of messages send",
+     *     tags={"Message"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation",
+     *         @OA\Schema(
+     *             type="array",
+     *             @OA\Items(ref="#/definitions/Message")
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response="401",
+     *         description="Unauthorized user",
+     *     ),
+     * )
+     */
     public function sendMessage(SendMessageRequest $request){
         $data = $request->all();
         $currentDate = Carbon::now();

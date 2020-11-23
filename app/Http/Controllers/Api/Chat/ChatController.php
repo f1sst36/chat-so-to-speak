@@ -20,9 +20,23 @@ class ChatController extends Controller
     use UploadTrait;
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @OA\Get(
+     *     path="/api/chat/type={type}",
+     *     description="Get list of chats by type",
+     *     tags={"Chat"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation",
+     *         @OA\Schema(
+     *             type="array",
+     *             @OA\Items(ref="#/definitions/Chat")
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response="401",
+     *         description="Unauthorized user",
+     *     ),
+     * )
      */
     public function index(
         Request $request, 
