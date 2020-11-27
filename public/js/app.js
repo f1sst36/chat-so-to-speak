@@ -27633,7 +27633,7 @@ process.umask = function() { return 0; };
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
- * Pusher JavaScript Library v7.0.1
+ * Pusher JavaScript Library v7.0.2
  * https://pusher.com/
  *
  * Copyright 2020, Pusher
@@ -28221,7 +28221,7 @@ var ScriptReceivers = new ScriptReceiverFactory('_pusher_script_', 'Pusher.Scrip
 
 // CONCATENATED MODULE: ./src/core/defaults.ts
 var Defaults = {
-    VERSION: "7.0.1",
+    VERSION: "7.0.2",
     PROTOCOL: 7,
     wsPort: 80,
     wssPort: 443,
@@ -65042,14 +65042,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var pusher_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
-/* harmony import */ var pusher_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(pusher_js__WEBPACK_IMPORTED_MODULE_4__);
 
 
 
-
-
-var pusher;
+ //import Pusher from "pusher-js";
+//var pusher;
 
 var Main = function Main() {
   var node = Object(react__WEBPACK_IMPORTED_MODULE_0__["useRef"])();
@@ -65058,24 +65055,31 @@ var Main = function Main() {
     //     console.log("NewMessageEvent", data);
     //     node.current.innerHTML = data.message['4'];
     // });
-    // const Pusher = require("pusher-js");
-    var pusher = new pusher_js__WEBPACK_IMPORTED_MODULE_4___default.a("657da11b3b498151a232", {
+    var Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js"); // Enable pusher logging - don't include this in production
+
+
+    Pusher.logToConsole = true;
+    var pusher = new Pusher("657da11b3b498151a232", {
       cluster: "eu",
       authEndpoint: "http://localhost/socket/auth"
     });
-    var channel = pusher.subscribe("chat");
-    channel.bind("App\\Events\\NewMessageEvent", function (data) {
-      console.log("NewMessage", data);
-      node.current.innerHTML += data.message.text;
-    }); // socket.onAny((event, ...args) => {
-    //     console.log(`got ${event}`);
+    var channel = pusher.subscribe("private-channel");
+    channel.bind("NewMessage", function (data) {
+      console.log(JSON.stringify(data));
+    }); // var pusher = new Pusher("657da11b3b498151a232", {
+    //     cluster: "eu",
+    //     authEndpoint: "http://localhost/socket/auth"
+    // });
+    // var channel = pusher.subscribe("private-chat");
+    // channel.bind("NewMessageEvent", function(data) {
+    //     console.log("NewMessageEvent", data);
+    //     //node.current.innerHTML += data.message.text;
     // });
   }, []);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Laravel"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "React"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
     ref: node
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     onClick: function onClick() {
-      // socket.emit('NewMessageEvent', 'Hey world');
       axios__WEBPACK_IMPORTED_MODULE_3___default()({
         method: "get",
         url: "http://localhost/test"
@@ -65103,8 +65107,8 @@ if (document.getElementById("root")) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Main\Programming\OpenServer\OpenServer\domains\chat-so-to-speak\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Main\Programming\OpenServer\OpenServer\domains\chat-so-to-speak\resources\css\app.css */"./resources/css/app.css");
+__webpack_require__(/*! F:\OS2\OpenServer\domains\chat-so-to-speak\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! F:\OS2\OpenServer\domains\chat-so-to-speak\resources\css\app.css */"./resources/css/app.css");
 
 
 /***/ }),

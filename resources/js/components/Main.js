@@ -5,8 +5,8 @@ import io from "socket.io-client";
 
 import axios from "axios";
 
-import Pusher from "pusher-js";
-var pusher;
+//import Pusher from "pusher-js";
+//var pusher;
 const Main = () => {
     const node = useRef();
     useEffect(() => {
@@ -15,21 +15,30 @@ const Main = () => {
         //     node.current.innerHTML = data.message['4'];
         // });
 
-        // const Pusher = require("pusher-js");
+        const Pusher = require("pusher-js");
+
+        // Enable pusher logging - don't include this in production
+        Pusher.logToConsole = true;
 
         var pusher = new Pusher("657da11b3b498151a232", {
             cluster: "eu",
             authEndpoint: "http://localhost/socket/auth"
         });
 
-        var channel = pusher.subscribe("chat");
-        channel.bind("App\\Events\\NewMessageEvent", function(data) {
-            console.log("NewMessage", data);
-            node.current.innerHTML += data.message.text;
+        var channel = pusher.subscribe("private-channel");
+        channel.bind("NewMessage", function(data) {
+            console.log(JSON.stringify(data));
         });
 
-        // socket.onAny((event, ...args) => {
-        //     console.log(`got ${event}`);
+        // var pusher = new Pusher("657da11b3b498151a232", {
+        //     cluster: "eu",
+        //     authEndpoint: "http://localhost/socket/auth"
+        // });
+
+        // var channel = pusher.subscribe("private-chat");
+        // channel.bind("NewMessageEvent", function(data) {
+        //     console.log("NewMessageEvent", data);
+        //     //node.current.innerHTML += data.message.text;
         // });
     }, []);
 
@@ -40,7 +49,6 @@ const Main = () => {
             <p ref={node}></p>
             <button
                 onClick={() => {
-                    // socket.emit('NewMessageEvent', 'Hey world');
                     axios({
                         method: "get",
                         url: "http://localhost/test"
