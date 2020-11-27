@@ -33,5 +33,5 @@ Route::get('/test', function (Request $request) {
     
     //App\Events\NewMessageEvent::dispatch($data);
     event(new App\Events\NewMessageEvent($data));
-    //return response()->json($data, 200);
+    return response()->json($data, 200);
 });

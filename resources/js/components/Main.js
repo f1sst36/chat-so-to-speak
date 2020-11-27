@@ -4,7 +4,9 @@ import ReactDOM from "react-dom";
 import io from "socket.io-client";
 
 import axios from "axios";
-var socket;
+
+import Pusher from "pusher-js";
+var pusher;
 const Main = () => {
     const node = useRef();
     useEffect(() => {
@@ -13,16 +15,17 @@ const Main = () => {
         //     node.current.innerHTML = data.message['4'];
         // });
 
-        socket = io("http://localhost:6001");
+        // const Pusher = require("pusher-js");
 
-        console.log(socket.id); // undefined
-
-        socket.on("connect", () => {
-            console.log(socket.id); // 'G5p5...'
+        var pusher = new Pusher("657da11b3b498151a232", {
+            cluster: "eu",
+            authEndpoint: "http://localhost/socket/auth"
         });
 
-        socket.on("NewMessageEvent", data => {
-            console.log(data);
+        var channel = pusher.subscribe("chat");
+        channel.bind("App\\Events\\NewMessageEvent", function(data) {
+            console.log("NewMessage", data);
+            node.current.innerHTML += data.message.text;
         });
 
         // socket.onAny((event, ...args) => {
@@ -37,7 +40,7 @@ const Main = () => {
             <p ref={node}></p>
             <button
                 onClick={() => {
-                    socket.emit('NewMessageEvent', 'Hey world');
+                    // socket.emit('NewMessageEvent', 'Hey world');
                     axios({
                         method: "get",
                         url: "http://localhost/test"

@@ -54,8 +54,9 @@ class MessageController extends Controller
         $message->created_at = $message->updated_at = $currentDate;
         
         if($message){
-            $message->save();
+           $message->save();
             event(new NewMessageEvent($message));
+            //event(new NewMessageEvent(['xyi' => 123]));
         }
 
         return response()->json([
