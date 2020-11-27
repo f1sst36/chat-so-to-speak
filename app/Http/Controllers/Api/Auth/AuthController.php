@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 use App\Models\User;
+use App\Events\UsersOnlineEvent;
 
 class AuthController extends Controller
 {
@@ -50,6 +51,8 @@ class AuthController extends Controller
         //     Carbon::now()->addDay();
 
         $token->token->save();
+
+        //event(new UsersOnlineEvent(Auth::user()));
 
         return response()->json([
             //'token_type' => 'Bearer',

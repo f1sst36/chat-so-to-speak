@@ -38,6 +38,19 @@
                 ],
                 "summary": "Trigger method to broadcasting event of messages send",
                 "operationId": "App\\Http\\Controllers\\Api\\Chat\\MessageController::sendMessage",
+                "requestBody": {
+                    "request": "person",
+                    "description": "Optional Request Parameters for Querying",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "integer"
+                            },
+                            "example": "{\r\n     * chat_id=1; \r\n     * text='Some text'\r\n     * }"
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "successful operation"

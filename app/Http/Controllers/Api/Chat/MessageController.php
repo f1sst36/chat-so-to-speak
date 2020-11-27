@@ -31,6 +31,18 @@ class MessageController extends Controller
      *     path="/api/chat/messages/send",
      *     summary="Trigger method to broadcasting event of messages send",
      *     tags={"Message"},
+     *     @OA\RequestBody(
+     *          request="person",
+     *          required=true,
+     *          description="Optional Request Parameters for Querying",
+     *          @OA\JsonContent(
+     *              type="integer",
+     *              example="{
+     * chat_id=1; 
+     * text='Some text'
+     * }"
+     *          )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="successful operation",
@@ -54,13 +66,28 @@ class MessageController extends Controller
         $message->created_at = $message->updated_at = $currentDate;
         
         if($message){
-           $message->save();
-            event(new NewMessageEvent($message));
-            //event(new NewMessageEvent(['xyi' => 123]));
+            $message->save();
+
+            $responseMessage = [
+                'id' => $message->id,
+                'user' => $message->user,
+                'text' => $message->text,
+                'updated_at' => $message->updated_at,
+            ];
+
+            $response = [
+                'dialogType' => $message->chat->type,
+                'dialogId' => $message->chat_id,
+                // 'dialogAvatar' => $message->chat->avatar,
+                'message' => $responseMessage,
+            ];
+
+            event(new NewMessageEvent($response));
         }
 
         return response()->json([
             'status' => true,
+            'data' => $response,
             'message' => 'Сообщение отправлено',
         ], 200);
     }

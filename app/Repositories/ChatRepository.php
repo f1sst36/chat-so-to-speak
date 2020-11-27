@@ -18,7 +18,7 @@ class ChatRepository extends CoreRepository{
     }
 
     protected function getOnlyChatsByTypeWithLastMessage($fields, $chat_ids, $type){
-        return $this->startConditions()
+        $result = $this->startConditions()
             ->select($fields)
             ->where('type', '=', $type)
             ->whereIn('id', $chat_ids)
@@ -28,10 +28,12 @@ class ChatRepository extends CoreRepository{
                             $query->select(['id', 'name', 'avatar'])
                                 ->get();
                             }])
-                        ->orderBy('created_at', 'desc')
-                        ->first();
-                        //->get();
+                        ->orderBy('id', 'desc')
+                        ->get();
+                        //->first();
                 }])->get();
+        
+        return $result;
     }
 
     protected function searchOnlyChatsByTypeWithLastMessage($fields, $chat_ids, $type, $search_query){
@@ -42,7 +44,7 @@ class ChatRepository extends CoreRepository{
             ->whereIn('id', $chat_ids)
             ->with(['messages' => function($query){
                     $query->select(['id', 'chat_id', 'text', 'updated_at'])
-                        ->orderBy('created_at', 'desc')
+                        ->orderBy('id', 'desc')
                         ->first();
                 }])->get();
     }
@@ -67,11 +69,17 @@ class ChatRepository extends CoreRepository{
             ->with(['user'])
             ->get();
 
-        $chats = $search_query != null ? 
-            $this->searchOnlyChatsByTypeWithLastMessage($fields, $chat_ids, $type, $search_query) : 
-            $this->getOnlyChatsByTypeWithLastMessage($fields, $chat_ids, $type);
-
+        // $chats = $search_query != null ? 
+        //     $this->searchOnlyChatsByTypeWithLastMessage($fields, $chat_ids, $type, $search_query) : 
+        $chats = $this->getOnlyChatsByTypeWithLastMessage($fields, $chat_ids, $type);
+        
         foreach($chats as $chat){
+            $msgTemp = $chat->messages->first();
+            unset($chat['messages']);
+
+            //$chat->messages = null;
+            $msgTemp == null ? $chat->setAttribute('messages', []) : $chat->setAttribute('messages', [$msgTemp]);;
+            //$chat->setAttribute('messages', $msgTemp);
             if ($chat->type == 0){
                 foreach($chatLinksWithUser as $chatLinkWithUser){
                     $chat->setAttribute('user', null);

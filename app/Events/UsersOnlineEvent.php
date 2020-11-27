@@ -14,16 +14,16 @@ class UsersOnlineEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $usersCount;
+    public $user;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($usersCount)
+    public function __construct($user)
     {
-        $this->usersCount = $usersCount;
+        $this->user = $user;
     }
 
     /**
@@ -33,11 +33,12 @@ class UsersOnlineEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return ['common'];
+        return ['users-online'];
     }
 
     public function broadcastAs()
     {
-        return 'UsersOnline';
+        return 'NewUser';
     }
+    
 }

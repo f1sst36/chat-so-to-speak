@@ -50,7 +50,7 @@
 
 // laravel-echo-server start
 
-// php artisan queue:work
+// php artisan queue:work !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 // Dont forget turn on Redis server (redis-cli ping => PONG)
 

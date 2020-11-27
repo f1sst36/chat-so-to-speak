@@ -28,7 +28,7 @@ class MessageRepository extends CoreRepository{
             ->with(['user'])
             ->limit(15)
             ->get();
-
+        
         return $result;
     }
 

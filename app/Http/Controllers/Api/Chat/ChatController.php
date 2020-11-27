@@ -46,7 +46,7 @@ class ChatController extends Controller
     )
     {
         $chats = $chatRepository->getChatsForUserByType($request->user()->id, $chat_type);
-
+        //return response()->json($chats, 200);
         if(count($chats) > 0){
             if($chat_type == 0){
                 foreach($chats as $chat){
@@ -125,6 +125,9 @@ class ChatController extends Controller
         }
     }
 
+    // chat_id
+    // или
+    // user_id, message_text,
     public function createDirectChat(
         CreateDirectChatRequest $request, 
         ChatRepository $chatRepository, 
