@@ -34,38 +34,6 @@ Route::post('socket/auth', function (Request $request) {
 
 Route::get('/test', function (Request $request) {
     //$data = ['abc' => 23, 'text' => 'Some text 123'];
-    
-    // $data = $request->all();
-    //     $currentDate = Carbon::now();
-
-    //     $message = (new Message)->fill($data);
-    //     $message->user_id = $request->user()->id;
-    //     $message->created_at = $message->updated_at = $currentDate;
-        
-    //     if($message){
-    //         $message->save();
-
-    //         $responseMessage = [
-    //             'id' => $message->id,
-    //             'user' => $message->user,
-    //             'text' => $message->text,
-    //             'updated_at' => $message->updated_at,
-    //         ];
-
-    //         $response = [
-    //             'dialogType' => $message->chat->type,
-    //             'dialogId' => $message->chat_id,
-    //             'message' => $responseMessage,
-    //         ];
-
-    //         event(new NewMessageEvent($response));
-    //     }
-
-    //     return response()->json([
-    //         'status' => true,
-    //         'data' => $response,
-    //         'message' => 'Сообщение отправлено',
-    //     ], 200);
 
     App\Events\NewMessageEvent::dispatch('hfghf');
     //event(new App\Events\NewMessageEvent('hfghf'));

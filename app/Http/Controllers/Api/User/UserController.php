@@ -12,7 +12,7 @@ class UserController extends Controller
 {
     public function index(Request $request, UserRepository $userRepository){
         $fields = ['id', 'name', 'avatar'];
-        $users = $userRepository->getAllUsersWithFields($fields);
+        $users = $userRepository->getAllUsersWithFields($fields, $request->user()->id);
         return response()->json($users, 200);
     }
 
@@ -41,5 +41,16 @@ class UserController extends Controller
         //$chats = $chatRepository->getChatsForUserByType($request->user()->id, $type, $searchQuery);
 
         return response()->json($users, 200);
+    }
+
+    // chat_id
+    public function getUserOutsideChat(Request $request, $chat_id, UserRepository $userRepository){
+        $users = $userRepository->fetchUserOutsideChat($chat_id);
+
+        if($users){
+            return response()->json($users, 200);
+        }
+
+        return response()->json([], 400);
     }
 }

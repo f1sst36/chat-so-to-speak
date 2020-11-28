@@ -26,7 +26,7 @@ class MessageRepository extends CoreRepository{
             //->orderBy('created_at', 'desc')
             ->orderBy('id', 'desc')
             ->with(['user'])
-            ->limit(15)
+            ->limit(20)
             ->get();
         
         return $result;

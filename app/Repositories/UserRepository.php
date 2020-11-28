@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\User as Model;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use App\Models\ChatUserLink;
 
 class UserRepository extends CoreRepository{
 
@@ -37,8 +38,8 @@ class UserRepository extends CoreRepository{
             ->first();
     }
 
-    public function getAllUsersWithFields($fields){
-        return $this->startConditions()->select($fields)->get();
+    public function getAllUsersWithFields($fields, $currentUserId){
+        return $this->startConditions()->select($fields)->where('id', '!=', $currentUserId)->get();
     }
 
     public function searchUserByName($name){
@@ -46,6 +47,24 @@ class UserRepository extends CoreRepository{
             ->select(['id', 'name', 'avatar'])
             ->where('name', 'LIKE', '%' . $name . '%')
             ->get();
+    }
+
+    public function fetchUserOutsideChat($chat_id){
+        $user_ids = ChatUserLink::select('user_id')
+            ->where('chat_id', '=', $chat_id)
+            ->get();
+        
+        $user_ids = $user_ids->map(function($user_id){
+            return $user_id->user_id;
+        });
+        //return $user_ids;
+
+        $result = $this->startConditions()
+            ->select(['id', 'name', 'avatar'])
+            ->whereNotIn('id', $user_ids)
+            ->get();
+        
+        return $result;
     }
 
 }

@@ -82,7 +82,7 @@ class MessageController extends Controller
                 'message' => $responseMessage,
             ];
 
-            event(new NewMessageEvent($response));
+            event(new NewMessageEvent($response, $message->chat_id));
         }
 
         return response()->json([

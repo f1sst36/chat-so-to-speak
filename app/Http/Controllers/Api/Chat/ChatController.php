@@ -45,21 +45,21 @@ class ChatController extends Controller
         UserRepository $userRepository
     )
     {
-        $chats = $chatRepository->getChatsForUserByType($request->user()->id, $chat_type);
-        //return response()->json($chats, 200);
-        if(count($chats) > 0){
-            if($chat_type == 0){
-                foreach($chats as $chat){
-                    $chat->name = json_decode($chat->name, true)[$request->user()->name];
-                }
-            }
-            
-            $result = $chats;
-            $statusCode = 200;
-        } else {
-            $result = [];
-            $statusCode = 200;
-        }
+        $chats = $chatRepository->getChatsForUserByType($request->user()->id, $chat_type, $request->user());
+        return response()->json($chats, 200);
+        // if(count($chats) > 0){
+        //     if($chat_type == 0){
+        //         foreach($chats as $chat){
+        //             $chat->name = json_decode($chat->name, true)[$request->user()->name];
+        //         }
+        //     }
+    
+        //     $result = $chats;
+        //     $statusCode = 200;
+        // } else {
+        //     $result = [];
+        //     $statusCode = 200;
+        // }
 
         return response()->json($result, $statusCode);
     }
@@ -125,47 +125,38 @@ class ChatController extends Controller
         }
     }
 
-    // chat_id
-    // или
-    // user_id, message_text,
+    // user_id,
     public function createDirectChat(
         CreateDirectChatRequest $request, 
         ChatRepository $chatRepository, 
         UserRepository $userRepository
     )
     {
-        return;
-        $interlocutor_id = $request->input('interlocutor_id');
+        $data = $request->all();
+
+        $isIssetChat = $chatRepository->findChatForBothUsersById($request->user()->id, $data['user_id']);
+
+        if($isIssetChat){
+            return response()->json([
+                'message' => 'Chat with these users already exists',
+                'chatId' => $isIssetChat
+            ], 400);
+        }
+
+        $secondUser = $userRepository->getUserInfoById($data['user_id']);
+
+        if(!$secondUser || $data['user_id'] == $request->user()->id){
+            return response()->json([
+                'message' => 'User with this id not found',
+            ], 404);
+        }
+
         $chat = new Chat();
+        $chat->name = json_encode([
+            $request->user()->name => $secondUser->name,
+            $secondUser->name => $request->user()->name
+        ]);
         $chat->type = 0;
-
-        if($interlocutor_id == $request->user()->id){
-            return response()->json([
-                'message' => 'Cant create a chat with myself',
-            ], 400);
-        }
-
-        $interlocutor = $userRepository->getInterlocutorById($data['interlocutor_id']);
-
-        if(!isset($interlocutor)){
-            return response()->json([
-                'message' => 'No have user with this id',
-            ], 400);
-        }
-
-        $chat->name = json_encode([$request->user()->name => $interlocutor->name, $interlocutor->name => $request->user()->name]);
-
-        $currentUserChats = $chatRepository->getChatsForUserByType($request->user()->id, 0);
-        foreach($currentUserChats as $currentUserChat){
-            if(
-                json_decode($currentUserChat->name, true)[$request->user()->name] == 
-                $interlocutor->name
-            ){
-                return response()->json([
-                    'message' => 'Chat with this user already exists',
-                ], 400);
-            }
-        }
 
         if ($chat) {
             $chat->owner_id = $request->user()->id;
@@ -175,39 +166,79 @@ class ChatController extends Controller
 
             try {
                 $chatRepository->linkUserWithChat($request->user()->id, $chat->id);
-                if(isset($data['interlocutor_id'])){
-                    $chat->setAttribute('user', $interlocutor);
-                    $chatRepository->linkUserWithChat($data['interlocutor_id'], $chat->id);
-                } else {
-                    $chat->setAttribute('users', [$request->user()]);
-                }
+                $chatRepository->linkUserWithChat($data['user_id'], $chat->id);
+
+                
             } catch(Exception $e) {
                 return response()->json([
                     'message' => 'Chat cant be saved into DB',
                 ], 400);
             }
 
-            // socket event
-
+            $chatName = json_decode($chat->name, true)[$request->user()->name];
             $result = [
-                'id' => $chat->id,
-                'type' => $chat->type,
-                'messages' => [],
-                'message' => 'Chat created successfully'
+                'chat' => [
+                    'id' => $chat->id,
+                    'type' => $chat->type,
+                    'name' => $chatName,
+                    'users' => [$request->user(), $secondUser],
+                    //'avatar' => ,
+                    'messages' => [],
+                ],
+                'message' => 'Личный чат успешно создан'
             ];
-
-            if (isset($chat->user)){
-                $result['user'] = $chat->user;
-            } else {
-                $result['name'] = $chat->name;
-                $result['users'] = $chat->users;
-            }
 
             return response()->json($result, 200);
         } else {
             return response()->json([
-                'message' => 'Failed to create chat',
+                'message' => 'Ошибка создания чата',
             ], 400);
         }
+    }
+
+    // chat_id, user_id
+    public function appendUserToGroup(Request $request, ChatRepository $chatRepository, UserRepository $userRepository){
+        $data = $request->all();
+        $isIssetChat = $chatRepository->isUserHaveChat($data['user_id'], $data['chat_id']);
+
+        if($isIssetChat){
+            return response()->json([
+                'message' => 'Пользователь уже состоит в этом чате',
+            ], 400);
+        }
+
+        try {
+            $chatRepository->linkUserWithChat($data['user_id'], $data['chat_id']);
+            //$chat = $chatRepository->getOnlyChatsByTypeWithLastMessage(['id', 'name', 'type', 'avatar'], [$data['chat_id']]);
+            $appendedUser = $userRepository->getUserInfoById($data['user_id']);
+        } catch(Exception $e) {
+            return response()->json([
+                'message' => 'Chat cant be saved into DB',
+            ], 400);
+        }
+        
+        //return $chat;
+
+        // if($chat->type == 0){
+        //     $chatName = json_decode($chat->name, true)[$request->user()->name];
+        // }else{
+        //     $chatName = $chat->name;
+        // }
+        
+        // $result = [
+        //     'chat' => [
+        //         'id' => $chat->id,
+        //         'type' => $chat->type,
+        //         'name' => $chatName,
+        //         'users' => ,
+        //         //'avatar' => ,
+        //         'messages' => [],
+        //     ],
+        //     'message' => 'Личный чат успешно создан'
+        // ];
+
+        //event(new AppendedToChatEvent($result));
+
+        return response()->json($appendedUser, 200);
     }
 }

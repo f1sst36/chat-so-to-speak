@@ -16,15 +16,17 @@ class NewMessageEvent implements ShouldBroadcastNow
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $message;
+    public $chatId;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($message)
+    public function __construct($message, $chatId = null)
     {
         $this->message = $message;
+        $this->chatId = $chatId;
     }
 
     /**
@@ -38,6 +40,7 @@ class NewMessageEvent implements ShouldBroadcastNow
         //return new Channel('chat');
 
         //return new PrivateChannel('private-channel');
+        if($this->chatId) return ['private-channel-' . $this->chatId];
         return ['private-channel'];
     }
 

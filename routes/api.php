@@ -36,6 +36,9 @@ Route::group(['namespace' => 'Chat', 'prefix' => 'chat'], function(){
 
     Route::get('/type={chat_type}', 'ChatController@index');
     Route::post('/create/group', 'ChatController@createGroupChat');
+    Route::post('/create/direct', 'ChatController@createDirectChat');
+
+    Route::post('/append-user', 'ChatController@appendUserToGroup');
 
 });
 
@@ -43,4 +46,6 @@ Route::group(['namespace' => 'User', 'prefix' => 'user'], function(){
     Route::get('/', 'UserController@index');
     Route::get('/info', 'UserController@show');
     Route::post('/search', 'UserController@searchUsersAndChats');
+
+    Route::get('/outside-chat/chat-id={chat_id}', 'UserController@getUserOutsideChat');
 });
