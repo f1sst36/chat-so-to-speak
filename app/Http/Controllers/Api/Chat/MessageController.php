@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Chat;
 
+use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Api\Chat\SendMessageRequest;
@@ -9,9 +10,13 @@ use App\Models\Message;
 use App\Repositories\MessageRepository;
 use App\Events\NewMessageEvent;
 use Illuminate\Support\Carbon;
+use App\Traits\UploadTrait;
 
 class MessageController extends Controller
 {
+
+    use UploadTrait;
+
     public function index(Request $request, $chat_id, $last_msg_id, MessageRepository $messageRepository)
     {   
         $isUserHaveChat = $messageRepository->isUserHaveChat($chat_id, $request->user()->id);
@@ -61,9 +66,34 @@ class MessageController extends Controller
         $data = $request->all();
         $currentDate = Carbon::now();
 
-        $message = (new Message)->fill($data);
+        $message = new Message();
+
+        $mediaExtention = "";
+
+        if($request->hasFile('media')){
+            $mediaData = $request->file('media');
+            $mediaDataName = Carbon::now()->format("s") . Str::random(25);
+            $folder = '/media/message/';
+            $filePath = $folder . $mediaDataName . '.' . $mediaData->getClientOriginalExtension();
+    
+            $this->uploadOne($mediaData, $folder, 'public', $mediaDataName);
+    
+            $message->media = "/storage" . $filePath;
+            $mediaExtention = $mediaData->getClientOriginalExtension();
+        }
+        
+
+        $message->fill($data);
         $message->user_id = $request->user()->id;
         $message->created_at = $message->updated_at = $currentDate;
+
+        if(!$message->text && !$message->media){
+            return response()->json([
+                'status' => false,
+                'data' => null,
+                'message' => 'Сообщение не может быть отпралено',
+            ], 200);
+        }
         
         if($message){
             $message->save();
@@ -72,6 +102,8 @@ class MessageController extends Controller
                 'id' => $message->id,
                 'user' => $message->user,
                 'text' => $message->text,
+                'media' => $message->media ? $message->media : "",
+                'media_extention' => $mediaExtention,
                 'updated_at' => $message->updated_at,
             ];
 

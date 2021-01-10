@@ -28,4 +28,11 @@ class Message extends Model
     public function chat(){
         return $this->belongsTo(Chat::class, 'chat_id');
     }
+
+    public function getMediaAttribute($media){
+        if($media != ''){
+            return env('APP_URL') . $media;
+        }
+        return '';
+    }
 }
