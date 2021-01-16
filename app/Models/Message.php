@@ -35,4 +35,18 @@ class Message extends Model
         }
         return '';
     }
+
+    public function getMediaNameAttribute($mediaName){
+        if(!$mediaName) return strval($mediaName);
+        return substr($mediaName, 26);
+    }
+
+    public function getMediaSizeAttribute($mediaSize){
+        if(!$mediaSize) return strval($mediaSize);
+        return intval($mediaSize);
+    }
+
+    public function getMediaExtentionAttribute($mediaExtention){
+        return strval($mediaExtention);
+    }
 }

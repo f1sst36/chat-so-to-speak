@@ -24,8 +24,16 @@ class ChatRepository extends CoreRepository{
                 ->where('type', '=', $type)
                 ->whereIn('id', $chat_ids)
                 ->with(['messages' => function($query){
-                        $query->select(['id', 'chat_id', 'user_id', 'text', 'updated_at'])
-                            ->with(['user' => function($query){
+                        $query->select(['id', 
+                            'chat_id', 
+                            'user_id', 
+                            'text', 
+                            'media', 
+                            'media_name', 
+                            'media_size', 
+                            'media_extention', 
+                            'updated_at']
+                        )->with(['user' => function($query){
                                 $query->select(['id', 'name', 'avatar'])
                                     ->get();
                                 }])
@@ -48,8 +56,22 @@ class ChatRepository extends CoreRepository{
                             //->first();
                     }])->get();
         }
+
         
-        return $result;
+        $totalResult = $result->map(function($item){
+            $newItem = $item;
+
+            if(count($newItem->messages) > 0){
+                $newItem->messages[0]->mediaName = $item->messages[0]->media_name;
+                $newItem->messages[0]->mediaExtention = $item->messages[0]->media_extention;
+                $newItem->messages[0]->mediaSize = $item->messages[0]->media_size;
+            }
+            
+            return $newItem;
+        });
+        
+        
+        return $totalResult;
     }
 
     protected function searchOnlyChatsByTypeWithLastMessage($fields, $chat_ids, $type, $search_query){

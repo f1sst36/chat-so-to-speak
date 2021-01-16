@@ -28,6 +28,7 @@ class MessageController extends Controller
         }
 
         $messages = $messageRepository->getMessagesByChatId($chat_id, $last_msg_id);
+
         return response()->json($messages, 200);
     }
 
@@ -68,18 +69,25 @@ class MessageController extends Controller
 
         $message = new Message();
 
-        $mediaExtention = "";
-
         if($request->hasFile('media')){
             $mediaData = $request->file('media');
-            $mediaDataName = Carbon::now()->format("s") . Str::random(25);
+            $mediaDataName = Str::random(25) . "_" . str_replace(
+                " ", 
+                "_", 
+                pathinfo($mediaData->getClientOriginalName(), PATHINFO_FILENAME)
+            );
             $folder = '/media/message/';
             $filePath = $folder . $mediaDataName . '.' . $mediaData->getClientOriginalExtension();
     
             $this->uploadOne($mediaData, $folder, 'public', $mediaDataName);
     
             $message->media = "/storage" . $filePath;
-            $mediaExtention = $mediaData->getClientOriginalExtension();
+            $message->media_name = $mediaDataName;
+            $message->media_size = $mediaData->getSize();
+            $message->media_extention = $mediaData->getClientOriginalExtension();
+
+            // $mediaExtention = $mediaData->getClientOriginalExtension();
+            // $message->mediaSize = strval($mediaData->getSize());
         }
         
 
@@ -103,7 +111,9 @@ class MessageController extends Controller
                 'user' => $message->user,
                 'text' => $message->text,
                 'media' => $message->media ? $message->media : "",
-                'media_extention' => $mediaExtention,
+                'mediaName' => $message->media_name ? $message->media_name : "",
+                'mediaExtention' => $message->media_extention ? $message->media_extention : "",
+                'mediaSize' => $message->media_size ? intval($message->media_size) : "",
                 'updated_at' => $message->updated_at,
             ];
 

@@ -21,6 +21,9 @@ class CreateMessagesTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->text('text')->nullable();
             $table->text('media')->nullable();
+            $table->text('media_name')->nullable();
+            $table->string('media_size')->nullable();
+            $table->string('media_extention')->nullable();
             $table->timestamps();
         });
     }

@@ -17,7 +17,7 @@ class MessageRepository extends CoreRepository{
     }
 
     public function getMessagesByChatId($chat_id, $last_msg_id){
-        $fields = ['id', 'text', 'user_id', 'updated_at'];
+        $fields = ['id', 'text', 'media', 'media_name', 'media_size', 'media_extention', 'user_id', 'updated_at'];
 
         $result = $this->startConditions()
             ->select($fields)
@@ -28,8 +28,27 @@ class MessageRepository extends CoreRepository{
             ->with(['user'])
             ->limit(20)
             ->get();
-        
-        return $result;
+
+        $totalResult = $result->map(function($item){
+            $newItem = $item;
+
+            // $newItem = collect($item);
+
+            $newItem->mediaName = $item->media_name;
+            $newItem->mediaExtention = $item->media_extention;
+            $newItem->mediaSize = $item->media_size;
+
+            // $newItem->forget("media_name");
+
+            return $newItem;
+        });
+
+        // unset($totalResult["media_name"]);
+        // $totalResult->forget("media_name");
+        // $totalResult->forget("media_extention");
+        // $totalResult->forget("media_size");
+
+        return $totalResult;
     }
 
     public function isUserHaveChat($chat_id, $user_id){
